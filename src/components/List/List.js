@@ -3,6 +3,7 @@ import axios from "axios";
 import { cacheAdapterEnhancer } from "axios-extensions";
 import { BASE_URL } from "../../constants";
 import styled from "styled-components";
+import moment from "moment";
 import { data } from "../../data";
 
 const http = axios.create({
@@ -37,13 +38,15 @@ const List = () => {
     getPost();
   }, []);
 
+  //if (!comments.length) return <p>Loading...</p>;
   return (
     <Container>
       <div>{post.title}</div>;
       {comments.map(comment => {
         if (comment) {
           return (
-            <div>
+            <div key={comment.id}>
+              Posted: {moment(comment.time).format("L")}
               <p key={comment.id}>{comment.text}</p>
             </div>
           );
