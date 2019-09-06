@@ -47,7 +47,7 @@ const List = () => {
   }
   return (
     <Container>
-      <div>{post.title}</div>;
+      <h2>{post.title}</h2>
       {comments
         .sort((a, b) => {
           if (a && b) {
@@ -59,13 +59,14 @@ const List = () => {
           if (comment) {
             return (
               <div key={comment.id}>
-                Posted: {moment(comment.time * 1000).format("YYYY-MM-DD HH:mm")}
+                <strong>
+                  Posted:{" "}
+                  {moment(comment.time * 1000).format("YYYY-MM-DD HH:mm")}
+                </strong>
                 <p
                   key={comment.id}
-                  // dangerouslySetInnerHTML={{ __html: comment.text }}
-                >
-                  {comment.text}
-                </p>
+                  dangerouslySetInnerHTML={{ __html: comment.text }}
+                />
               </div>
             );
           }
@@ -78,7 +79,9 @@ const List = () => {
 const Container = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-direction: column;
   max-width: 1200px;
+  padding: 24px;
 `;
 export default List;
