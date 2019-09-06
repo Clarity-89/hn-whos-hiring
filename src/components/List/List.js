@@ -4,7 +4,6 @@ import { cacheAdapterEnhancer } from "axios-extensions";
 import { BASE_URL } from "../../constants";
 import styled from "styled-components";
 import moment from "moment";
-import { data } from "../../data";
 
 const http = axios.create({
   baseURL: BASE_URL,
@@ -20,39 +19,48 @@ const http = axios.create({
  */
 const List = () => {
   const [post, setPost] = useState([]);
-  const [comments, setComments] = useState(data);
-  const id = "20867123";
+  const [comments, setComments] = useState([]);
+  //const id = "20867123";
+  const id = "20888156";
 
   useEffect(() => {
-    const getPost = async () => {
+    const getData = async () => {
       const resp = await http.get(`/item/${id}.json`);
       setPost(resp.data);
-      // let c = [];
-      // for (let kid_id of resp.data.kids) {
-      //   c.push(http.get(`/item/${kid_id}.json`).then(resp => resp.data));
-      // }
-      //
-      // Promise.all(c).then(data =>     setComments(data));
+      for (let promise of getComments(resp.data.kids)) {
+        promise
+          .then(resp => {
+            const comment = resp.data;
+            setComments(comments => [...comments, comment]);
+          })
+          .catch(e => {
+            console.error(e);
+          });
+      }
     };
 
-    getPost();
+    getData();
   }, []);
 
-  //if (!comments.length) return <p>Loading...</p>;
+  function* getComments(ids) {
+    yield* ids.map(id => http.get(`/item/${id}.json`));
+  }
   return (
     <Container>
       <div>{post.title}</div>;
-      {comments.map(comment => {
-        if (comment) {
-          return (
-            <div key={comment.id}>
-              Posted: {moment(comment.time).format("L")}
-              <p key={comment.id}>{comment.text}</p>
-            </div>
-          );
-        }
-        return null;
-      })}
+      {comments
+        .sort((a, b) => b.time - a.time)
+        .map(comment => {
+          if (comment) {
+            return (
+              <div key={comment.id}>
+                Posted: {moment(comment.time * 1000).format("YYYY-MM-DD HH:mm")}
+                <p key={comment.id}>{comment.text}</p>
+              </div>
+            );
+          }
+          return null;
+        })}
     </Container>
   );
 };
