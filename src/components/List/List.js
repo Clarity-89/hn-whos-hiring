@@ -20,8 +20,8 @@ const http = axios.create({
 const List = () => {
   const [post, setPost] = useState([]);
   const [comments, setComments] = useState([]);
-  //const id = "20867123";
-  const id = "20888156";
+  const id = "20867123";
+  //const id = "20888156";
 
   useEffect(() => {
     const getData = async () => {
@@ -49,13 +49,23 @@ const List = () => {
     <Container>
       <div>{post.title}</div>;
       {comments
-        .sort((a, b) => b.time - a.time)
+        .sort((a, b) => {
+          if (a && b) {
+            return b.time - a.time;
+          }
+          return 0;
+        })
         .map(comment => {
           if (comment) {
             return (
               <div key={comment.id}>
                 Posted: {moment(comment.time * 1000).format("YYYY-MM-DD HH:mm")}
-                <p key={comment.id}>{comment.text}</p>
+                <p
+                  key={comment.id}
+                  // dangerouslySetInnerHTML={{ __html: comment.text }}
+                >
+                  {comment.text}
+                </p>
               </div>
             );
           }
