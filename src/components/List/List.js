@@ -4,6 +4,7 @@ import { cacheAdapterEnhancer } from "axios-extensions";
 import { BASE_URL } from "../../constants";
 import styled from "styled-components";
 import moment from "moment";
+import DOMPurify from "dompurify";
 
 const http = axios.create({
   baseURL: BASE_URL,
@@ -26,6 +27,7 @@ const List = () => {
   useEffect(() => {
     const getData = async () => {
       const resp = await http.get(`/item/${id}.json`);
+
       setPost(resp.data);
       for (let promise of getComments(resp.data.kids)) {
         promise
@@ -65,7 +67,9 @@ const List = () => {
                 </strong>
                 <p
                   key={comment.id}
-                  dangerouslySetInnerHTML={{ __html: comment.text }}
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(comment.text)
+                  }}
                 />
               </div>
             );
