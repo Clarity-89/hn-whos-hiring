@@ -21,8 +21,8 @@ const http = axios.create({
 const List = () => {
   const [post, setPost] = useState([]);
   const [comments, setComments] = useState([]);
-  const id = "20867123";
-  //const id = "20888156";
+  //const id = "20867123";
+  const id = "20888156";
 
   useEffect(() => {
     const getData = async () => {
@@ -81,10 +81,6 @@ const List = () => {
 };
 
 const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
   max-width: 1200px;
   padding: 24px;
 `;
