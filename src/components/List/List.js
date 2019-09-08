@@ -21,8 +21,8 @@ const http = axios.create({
 const List = () => {
   const [post, setPost] = useState([]);
   const [comments, setComments] = useState([]);
-  //const id = "20867123";
-  const id = "20888156";
+  const id = "20867123";
+  //const id = "20888156";
 
   useEffect(() => {
     const getData = async () => {
