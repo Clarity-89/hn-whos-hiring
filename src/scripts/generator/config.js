@@ -39,7 +39,7 @@ module.exports = {
       message: "Select component",
       when: ({ action, select }) =>
         action === "add" && select === "react_component",
-      choices: listComponents
+      choices: listComponents()
     },
     {
       type: "input",
