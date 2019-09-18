@@ -21,15 +21,21 @@ const http = axios.create({
 const List = () => {
   const [post, setPost] = useState([]);
   const [comments, setComments] = useState([]);
+  const [pagination, setPagination] = useState({ page: 0, pageSize: 50 });
   const id = "20867123";
-  //const id = "20888156";
+
+  const paginate = data => {
+    const { page, pageSize } = pagination;
+    return data.slice(page, (page + 1) * pageSize);
+  };
 
   useEffect(() => {
     const getData = async () => {
       const resp = await http.get(`/item/${id}.json`);
 
       setPost(resp.data);
-      for (let promise of getComments(resp.data.kids)) {
+      const paginatedData = paginate(resp.data.kids);
+      for (let promise of getComments(paginatedData)) {
         promise
           .then(resp => {
             const comment = resp.data;
@@ -47,35 +53,40 @@ const List = () => {
   function* getComments(ids) {
     yield* ids.map(id => http.get(`/item/${id}.json`));
   }
+
   return (
     <Container>
       <h2>{post.title}</h2>
-      {comments
-        .sort((a, b) => {
-          if (a && b) {
-            return b.time - a.time;
-          }
-          return 0;
-        })
-        .map(comment => {
-          if (comment) {
-            return (
-              <div key={comment.id}>
-                <strong>
-                  Posted:{" "}
-                  {moment(comment.time * 1000).format("YYYY-MM-DD HH:mm")}
-                </strong>
-                <p
-                  key={comment.id}
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(comment.text)
-                  }}
-                />
-              </div>
-            );
-          }
-          return null;
-        })}
+      {!comments.length ? (
+        <p>Loading ...</p>
+      ) : (
+        comments
+          .sort((a, b) => {
+            if (a && b) {
+              return b.time - a.time;
+            }
+            return 0;
+          })
+          .map(comment => {
+            if (comment) {
+              return (
+                <div key={comment.id}>
+                  <strong>
+                    Posted:{" "}
+                    {moment(comment.time * 1000).format("YYYY-MM-DD HH:mm")}
+                  </strong>
+                  <p
+                    key={comment.id}
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(comment.text)
+                    }}
+                  />
+                </div>
+              );
+            }
+            return null;
+          })
+      )}
     </Container>
   );
 };
