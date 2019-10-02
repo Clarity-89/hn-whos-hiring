@@ -22,7 +22,7 @@ const List = () => {
   const [post, setPost] = useState([]);
   const [comments, setComments] = useState([]);
   const [pagination, setPagination] = useState({ page: 0, pageSize: 50 });
-  const id = "20867123";
+  const id = "21126014";
 
   const paginate = data => {
     const { page, pageSize } = pagination;
@@ -76,7 +76,6 @@ const List = () => {
                     {moment(comment.time * 1000).format("YYYY-MM-DD HH:mm")}
                   </strong>
                   <p
-                    key={comment.id}
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(comment.text)
                     }}
